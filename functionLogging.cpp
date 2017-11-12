@@ -26,27 +26,27 @@ void logger(char functionName[], char functionPurpose[], bool exitFlag){
       ofstream ofs;
       ofs.open ("functionLogging.txt", ofstream::out | ofstream::app);
 
-      ofs<<currentDateTime()<<"   ";
+      ofs<<currentDateTime()<<",";
       if(exitFlag){
-          ofs<<"enter   ";
+          ofs<<"enter,";
       }
       else{
-          ofs<<"exit   ";
+          ofs<<"exit,";
       }
       for(int i = 0; i < strlen(functionName); i++){
           ofs<<functionName[i];
       }
-      ofs<<"   ";
+      ofs<<",";
       for(int i = 0; i < strlen(functionPurpose); i++){
           ofs<<functionPurpose[i];
       }
-      ofs<<"   \n";
+      ofs<<"\n";
       ofs.close();
 }
 
 int main()
 {
 	logger("LMAO","LMAOOFF",true);
-    logger("LMAO","LMAOOFF",false);
+    	logger("LMAO","LMAOOFF",false);
 	return 0;
 }
