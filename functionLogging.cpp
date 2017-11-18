@@ -47,6 +47,7 @@ void logger(char functionName[], char functionPurpose[], bool exitFlag){
 int main()
 {
 	logger("LMAO","LMAOOFF",true);
-    	logger("LMAO","LMAOOFF",false);
+  logger("LMAO","LMAOOFF",false);
+
 	return 0;
 }

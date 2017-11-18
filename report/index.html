@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style> /* set the CSS */
+
+#lineDaily {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 3px;
+}
+
+.line {
+  fill:none;
+  stroke: steelblue;
+  stroke-width: 2px;
+}
+
+div.tooltipDaily{
+  position: absolute;
+  text-align: center;
+  width: 60px;
+  height: 50px;
+  padding: 2px;
+  font: 12px sans-serif;
+  background: lightsteelblue;
+  border: 0px;
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+.lineChartTitle2 {
+	font-family: Verdana;
+	font-size  : 72px;
+	fill       : lightgrey;
+	text-anchor: middle;
+	font-weight: bold;
+}
+
+</style>
+<body>
+
+<!-- load the d3.js library -->
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+
+// set the dimensions and margins of the graph
+var marginDaily = {top: 20, right: 20, bottom: 30, left: 50},
+    widthDaily = 1000 - marginDaily.left - marginDaily.right,
+    heightDaily = 300 - marginDaily.top - marginDaily.bottom;
+
+// parse the date / time
+var parseTimeDaily = d3.timeParse("%d-%b-%y");
+var formatTimeDaily = d3.timeFormat("%e %B");
+
+// set the ranges
+var xDaily = d3.scaleTime().range([0, widthDaily]);
+var yDaily = d3.scaleLinear().range([heightDaily, 0]);
+
+// define the line
+var valuelineDaily = d3.line()
+    .x(function(d) { return xDaily(d.date); })
+    .y(function(d) { return yDaily(d.hoursStudying); });
+
+var div = d3.select("body").append("div")
+    .attr("class", "tooltipDaily")
+    .style("opacity", 0);
+
+// append the svg obgect to the body of the page
+// appends a 'group' element to 'svg'
+// moves the 'group' element to the top left margin
+var svgDaily = d3.select("body").append("div").attr("id","Daily").append("svg")
+    .attr("width", widthDaily + marginDaily.left + marginDaily.right)
+    .attr("height", heightDaily + marginDaily.top + marginDaily.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + marginDaily.left + "," + marginDaily.top + ")");
+
+svgDaily.append("text")
+		.text("Daily Hours studied")
+		.attr("class","lineChartTitle2")
+		.attr("x",widthDaily/2)
+		.attr("y",heightDaily/2);
+
+// Get the data
+d3.csv("hours.csv", function(error, data) {
+  if (error) throw error;
+
+  // format the data
+  data.forEach(function(d) {
+      d.date = parseTimeDaily(d.date);
+      d.hoursStudying = +d.hoursStudying;
+  });
+
+  // scale the range of the data
+  xDaily.domain(d3.extent(data, function(d) { return d.date; }));
+  yDaily.domain(d3.extent(data, function(d) { return d.hoursStudying; }));
+
+  // add the valueline path.
+  svgDaily.append("path")
+     .data([data])
+     .attr("id", "lineDaily")
+     .attr("d", valuelineDaily)
+     .attr("stroke", "black");
+
+  // add the dots with tooltips
+  svgDaily.selectAll("dot")
+     .data(data)
+   .enter().append("circle")
+     .attr("r", 5)
+     .attr("stroke", "black")
+     .attr("fill","white")
+     .attr("cx", function(d) { return xDaily(d.date); })
+     .attr("cy", function(d) { return yDaily(d.hoursStudying); })
+     .on("mouseover", function(d) {
+       div.transition()
+         .duration(200)
+         .style("opacity", .9);
+       div.html(formatTimeDaily(d.date) + "<br/>" + d.hoursStudying)
+         .style("left", (d3.event.pageX) + "px")
+         .style("top", (d3.event.pageY - 50) + "px");
+       })
+     .on("mouseout", function(d) {
+       div.transition()
+         .duration(500)
+         .style("opacity", 0);
+       });
+
+  // add the X Axis
+  svgDaily.append("g")
+      .attr("transform", "translate(0," + heightDaily + ")")
+      .call(d3.axisBottom(xDaily));
+
+  // add the Y Axis
+  svgDaily.append("g")
+      .call(d3.axisLeft(yDaily));
+
+});
+
+</script>
+<script>
+
+// set the dimensions and margins of the graph
+var marginMovement = {top: 20, right: 20, bottom: 30, left: 50},
+    widthMovement = 1000 - marginMovement.left - marginMovement.right,
+    heightMovement = 300 - marginMovement.top - marginMovement.bottom;
+
+// parse the date / time
+var parseTimeMovement = d3.timeParse("%Y-%m-%d.%H:%M:%S");
+var formatTimeMovement = d3.timeFormat("%e %B");
+
+// set the ranges
+var xMovement = d3.scaleTime().range([0, widthMovement]);
+var yMovement = d3.scaleLinear().range([heightMovement, 0]);
+
+// define the line
+var valuelineMovement = d3.line()
+    .x(function(d) { return xMovement(d.date); })
+    .y(function(d) { return yMovement(d.movement); });
+
+// append the svg obgect to the body of the page
+// appends a 'group' element to 'svg'
+// moves the 'group' element to the top left margin
+var svgMovement = d3.select("body").append("div").attr("id","Movement").append("svg")
+    .attr("width", widthMovement + marginMovement.left + marginMovement.right)
+    .attr("height", heightMovement + marginMovement.top + marginMovement.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + marginMovement.left + "," + marginMovement.top + ")");
+
+svgMovement.append("text")
+		.text("Movement today")
+		.attr("class","lineChartTitle2")
+		.attr("x",widthMovement/2)
+		.attr("y",heightMovement/2);
+
+// Get the data
+d3.csv("movement.csv", function(error, data) {
+  if (error) throw error;
+
+  // format the data
+  data.forEach(function(d) {
+      d.date = parseTimeMovement(d.date);
+      d.movement = +d.movement;
+  });
+
+  // scale the range of the data
+  xMovement.domain(d3.extent(data, function(d) { return d.date; }));
+  yMovement.domain(d3.extent(data, function(d) { return d.movement; }));
+
+  // add the valueline path.
+  svgMovement.append("path")
+     .data([data])
+     .attr("class", "line")
+     .attr("d", valuelineMovement);
+
+  // add the X Axis
+  svgMovement.append("g")
+      .attr("transform", "translate(0," + heightMovement + ")")
+      .call(d3.axisBottom(xMovement));
+
+  // add the Y Axis
+  svgMovement.append("g")
+      .call(d3.axisLeft(yMovement));
+
+});
+
+</script>
+</body>
