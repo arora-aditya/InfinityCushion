@@ -24,7 +24,7 @@ void logger(char functionName[], char functionPurpose[], bool exitFlag){
       exitFlag: whether a function is being entered into or exited from
       */
       ofstream ofs;
-      ofs.open ("functionLogging.txt", ofstream::out | ofstream::app);
+      ofs.open ("functionLogging.csv", ofstream::out | ofstream::app);
 
       ofs<<currentDateTime()<<",";
       if(exitFlag){
@@ -48,5 +48,6 @@ int main()
 {
 	logger("LMAO","LMAOOFF",true);
   logger("LMAO","LMAOOFF",false);
+
 	return 0;
 }
