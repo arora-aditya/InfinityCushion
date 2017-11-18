@@ -70,11 +70,8 @@ void logger(){
       output[i] = (val >> i) & 1;
     }
     buffer[j] = processSensor(output);
-    cout<<buffer[j];
-    cout<<endl;
     j++;
     if(j > 9){
-      cout<<endl;
       j = 0;
       float sum = summation(buffer);
       ofs<<currentDateTime()<<","<<sum<<"\n";
