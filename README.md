@@ -38,3 +38,6 @@ Here's an initial draft outline that should have more details filled in over the
 ### Appendix
   Source code
   Peer contribution
+  
+  ### Commenting & Code Structure
+  Each new class/operation requires proper documentation in the form of commenting. Must include the name of function/operation being done, why it is present, what is accomplishes in respect to the larger task, and date started. Can include extra information below if necessary. 
