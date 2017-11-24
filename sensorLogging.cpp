@@ -68,7 +68,7 @@ void logger(){
   int rightBuffer[10] = {0,0,0,0,0,0,0,0,0,0};
   int j = 0;
   ofs.open ("movement.csv", ofstream::out | ofstream::app);
-  ofs<<"date,movement,left,right\n";
+  ofs<<"date,movement,left,right,fsr\n";
   while(true){
     char val = getSensorData();
     int output[5] = {0,0,0,0,0} ;
@@ -92,7 +92,7 @@ void logger(){
       float sumTotal = summation(buffer);
       float sumLeft = summation(leftBuffer);
       float sumRight = summation(rightBuffer);
-      ofs<<currentDateTime()<<","<<sumTotal<<","<<sumLeft<<","<<sumRight<<"\n";
+      ofs<<currentDateTime()<<","<<sumTotal<<","<<sumLeft<<","<<sumRight<<","<<output[0]<<"\n";
     }
   }
 
