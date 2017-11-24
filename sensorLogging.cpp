@@ -30,6 +30,14 @@ float processSensor(int output[CHAR_BIT]){
   return 0;
 }
 
+float processHalfSensor(int output[2]){
+  int sum = output[0] + output[1];
+  if(sum >= 1){
+    return sum;
+  }
+  return 0;
+}
+
 float summation(int buffer[]){
   /*
   sum over buffer
@@ -56,9 +64,11 @@ void logger(){
   */
   ofstream ofs;
   int buffer[10] = {0,0,0,0,0,0,0,0,0,0};
+  int leftBuffer[10] = {0,0,0,0,0,0,0,0,0,0};
+  int rightBuffer[10] = {0,0,0,0,0,0,0,0,0,0};
   int j = 0;
   ofs.open ("movement.csv", ofstream::out | ofstream::app);
-  ofs<<"date,movement\n";
+  ofs<<"date,movement,left,right\n";
   while(true){
     char val = getSensorData();
     int output[5] = {0,0,0,0,0} ;
@@ -68,13 +78,21 @@ void logger(){
     */
     for (int i = 0; i < 5; ++i) {
       output[i] = (val >> i) & 1;
+      cout<<output[i];
     }
+    cout<<'\n';
+    int leftOutput[2] = {output[1],output[2]};
+    int rightOutput[2] = {output[3],output[4]};
+    leftBuffer[j] = processHalfSensor(leftOutput);
+    rightBuffer[j] = processHalfSensor(rightOutput);
     buffer[j] = processSensor(output);
     j++;
     if(j > 9){
       j = 0;
-      float sum = summation(buffer);
-      ofs<<currentDateTime()<<","<<sum<<"\n";
+      float sumTotal = summation(buffer);
+      float sumLeft = summation(leftBuffer);
+      float sumRight = summation(rightBuffer);
+      ofs<<currentDateTime()<<","<<sumTotal<<","<<sumLeft<<","<<sumRight<<"\n";
     }
   }
 
