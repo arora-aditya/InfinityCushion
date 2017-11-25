@@ -5,6 +5,7 @@
 #include <fstream>
 #include "functionLogging.h"
 #include "state.h"
+#include "sensorRead.h"
 using namespace std;
 
 // void logger(char errorTag[], char functionName[], char message[], int errorCode);
@@ -47,19 +48,12 @@ float summation(int buffer[]){
   return sum;
 }
 
-char getSensorData(){
-  char j = 0;
-  for(int i = 0; i < 7; i++){
-    j *= 2;
-    j += rand()%2;
-  }
-  return j;
-}
-
 void sensorLogger(){
   /*
   loop of sensor reading and writing to file after processing
   */
+  gpioReader gpio;
+  gpio.init();
   logger("DEBUG", "sensorLogger", "entered loop of sensor reading and writing to file after processing");
   ofstream ofs;
   int buffer[10] = {0,0,0,0,0,0,0,0,0,0};
@@ -75,7 +69,7 @@ void sensorLogger(){
   ofs<<"date,movement,left,right,fsr\n";
   writeState(1); //state: START
   while(output[5] == 1){
-    char val = getSensorData();
+    char val = gpio.getSensorData();
     for(int i = 0; i < 7; i++){
       output[i] = 0;
     }
