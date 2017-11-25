@@ -1,11 +1,12 @@
 #include <iostream>
 #include <string>
+#include <string.h>
 #include <stdio.h>
 #include <time.h>
 #include <fstream>
 using namespace std;
 
-int returnLevel(char errorTag[]){
+int returnLevel(const char errorTag[]){
   if(!strcmp(errorTag, "FATAL")){
     return 0;
   }
@@ -40,7 +41,7 @@ const std::string currentDateTime() {
     return buf;
 }
 
-void logger(char errorTag[], char functionName[], char message[], int errorCode){
+void logger(const char errorTag[], const char functionName[], const char message[], const int errorCode){
       /*
       function[]: function names
       exitFlag: whether a function is being entered into or exited from
