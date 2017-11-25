@@ -35,56 +35,62 @@ void hours(){
   ifstream ifs;
   ofstream ofs;
   ifs.open("report/movement.csv");
-  ofs.open("report/hour.csv");
+  ofs.open("report/hours.csv");
   int seconds = 0;
   char date[11];
   char previousDate[11];
   bool dateSet = false;
   char line[100];
-    bool done = false;
-    int fileLineNumber = 0;
-    while (!done) {             // Read from file
-        ++fileLineNumber;
-        if (!ifs.getline(line, 99)) { // Get next line
-            if (ifs.eof()) {                       // End of file
-                done = true;
-                break;
-            }
+  bool done = false;
+  int fileLineNumber = 0;
+  while (!done) {             // Read from file
+      ++fileLineNumber;
+      if (!ifs.getline(line, 99)) { // Get next line
+          if (ifs.eof()) {                       // End of file
+              done = true;
+              break;
+          }
+      }
+      if(fileLineNumber-1){
+        for(int i = 0; i < 10; i++){
+          date[i] = line[i];
         }
-        if(fileLineNumber-1){
+        date[10] = '\0';
+        if(!dateSet){
+          strcpy(previousDate, date);
+          dateSet = true;
+        }
+        if(strcmp(date, previousDate) != 0){
+          for(int i = 0; i < 10; i++){
+            ofs<<previousDate[i];
+          }
+          ofs<<','<<(float)seconds/3600<<endl;
+          seconds=0;
           if(parseLine(line)){
-            for(int i = 0; i < 10; i++){
-              date[i] = line[i];
-            }
-            date[10] = '\0';
-            if(!dateSet){
-              strcpy(previousDate, date);
-              dateSet = true;
-            }
-            if(strcmp(date, previousDate) != 0){
-              for(int i = 0; i < 10; i++){
-                ofs<<date[i];
-              }
-              ofs<<','<<seconds/60<<endl;
-              seconds=0;
-              strcpy(date, previousDate);
-            }
-            else{
-              seconds++;
-            }
+            seconds++;
+          }
+          strcpy(previousDate, date);
+        }
+        else{
+          if(parseLine(line)){
+            seconds++;
           }
         }
+      }
+      else{
+        ofs<<"date,hoursStudying\n";
+      }
     }
     for(int i = 0; i < 10; i++){
       ofs<<date[i];
     }
-    ofs<<','<<seconds/60<<endl;
+    ofs<<','<<(float) seconds/3600<<endl;
     ifs.close();
     ofs.close();
 }
 
 
 int main(){
-  cout<<parseLine(",,,,1");
+  // cout<<parseLine(",,,,1");
   hours();
 }
