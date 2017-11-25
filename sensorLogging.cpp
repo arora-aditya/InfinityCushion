@@ -9,7 +9,7 @@
 using namespace std;
 
 // void logger(char errorTag[], char functionName[], char message[], int errorCode);
-float processSensor(int output[CHAR_BIT]){
+float processSensor(int output[8]){
   /*
     pre-process sensor data
   */
@@ -103,7 +103,7 @@ void sensorLogger(){
   }
   if(output[5] == 0){
     writeState(0); //state: STOP
-  })
+  }
   logger("DEBUG", "sensorLogger", "closed all files and exited");
   ofs.close();
 }

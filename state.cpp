@@ -31,8 +31,3 @@ int writeState(int globalState){
   logger("INFO","StateChanged",logMessage);
   return globalState;
 }
-
-int main(){
-  writeState(0);
-  cout<<readState();
-}
