@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <fstream>
+#include "state.h"
 using namespace std;
 
 // Get current date/time, format is YYYY-MM-DD.HH:mm:ss
@@ -91,6 +92,8 @@ void hours(){
 
 
 int main(){
-  // cout<<parseLine(",,,,1");
-  hours();
+  if(readState() == 2){
+    hours();
+  }
+  writeState(0); 
 }

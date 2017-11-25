@@ -4,6 +4,7 @@
 #include <time.h>
 #include <fstream>
 #include "functionLogging.h"
+#include "state.h"
 using namespace std;
 
 // void logger(char errorTag[], char functionName[], char message[], int errorCode);
@@ -72,6 +73,7 @@ void sensorLogger(){
   }
   int output[7] = {0,0,0,0,0,1,0};
   ofs<<"date,movement,left,right,fsr\n";
+  writeState(1); //state: START
   while(output[5] == 1){
     char val = getSensorData();
     for(int i = 0; i < 7; i++){
@@ -102,6 +104,12 @@ void sensorLogger(){
       logger("DEBUG", "fileWrite", "written to files and flushed");
     }
   }
+  if(output[6] == 1){
+    writeState(2); //state: REPORT_GENERATION
+  }
+  if(output[5] == 0){
+    writeState(0); //state: STOP
+  })
   logger("DEBUG", "sensorLogger", "closed all files and exited");
   ofs.close();
 }
