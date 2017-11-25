@@ -1,9 +1,9 @@
-#include <iostream>
 #include <string>
 #include <string.h>
-#include <stdio.h>
-#include <time.h>
 #include <fstream>
+
+#include "functionLogging.h"
+
 using namespace std;
 
 int returnLevel(const char errorTag[]){

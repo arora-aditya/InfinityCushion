@@ -1,8 +1,9 @@
-#ifndef FUNCTION_LOGGING
-#define FUNCTION_LOGGING
+#ifndef FUNCTIONTEST_H
+#define FUNCTIONTEST_H
 #include <string>
 enum logLevel{FATAL, ERROR, WARNING, INFO, DEBUG};
-int returnLevel(char errorTag[]);
+int returnLevel(const char errorTag[]);
 const std::string currentDateTime();
-void logger(const char errorTag[], const char functionName[], const char message[], int errorCode = 0);
+void logger(const char errorTag[], const char functionName[], const char message[], const int errorCode);
+
 #endif
