@@ -54,6 +54,7 @@ void sensorLogger(){
   */
   gpioReader gpio;
   gpio.init();
+  gpio.setLogLevel(4);
   logger("DEBUG", "sensorLogger", "entered loop of sensor reading and writing to file after processing");
   ofstream ofs;
   int buffer[10] = {0,0,0,0,0,0,0,0,0,0};
