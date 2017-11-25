@@ -6,17 +6,17 @@
 #include "functionLogging.h"
 using namespace std;
 
-// void logger(char errorTag[], char functionName[], char message[], int errorCode);
 float processSensor(int output[CHAR_BIT]){
   /*
     pre-process sensor data
   */
-  logger("DEBUG","processSensor", "entered pre-process sensor data");
+  logger("processSensor","pre-process sensor data", true);
   float val = 0.4 * output[0] + 0.15 * (output[1]+output[2]+output[3]+output[4]);
   if(val > 0.8){
+    logger("processSensor","pre-process sensor data", false);
     return 1;
   }
-  logger("DEBUG","processSensor", "exited pre-process sensor data");
+  logger("processSensor","pre-process sensor data", false);
   return 0;
 }
 
@@ -24,12 +24,13 @@ float processHalfSensor(int output[2]){
   /*
   process data for left and right halves seperately
   */
-  logger("DEBUG","processHalfSensor", "entered process data for left and right halves seperately");
+  logger("processHalfSensor","process data for left and right halves seperately", true);
   int sum = output[0] + output[1];
   if(sum >= 1){
+    logger("processHalfSensor","process data for left and right halves seperately", false);
     return sum;
   }
-  logger("DEBUG","processHalfSensor", "exited process data for left and right halves seperately");
+  logger("processHalfSensor","process data for left and right halves seperately", false);
   return 0;
 }
 
@@ -37,12 +38,12 @@ float summation(int buffer[]){
   /*
   sum over buffer
   */
-  logger("DEBUG","summation", "entered sum over buffer");
+  logger("summation","sum over buffer", true);
   float sum = 0;
   for(int i = 0; i < 10; i++){
     sum += buffer[i];
   }
-  logger("DEBUG","summation", "exited sum over buffer");
+  logger("summation","sum over buffer", false);
   return sum;
 }
 
@@ -59,20 +60,28 @@ void sensorLogger(){
   /*
   infinite loop of sensor reading and writing to file after processing
   */
-  logger("DEBUG", "sensorLogger", "entered infinite loop of sensor reading and writing to file after processing");
   ofstream ofs;
+  logger("sensorLogger","infinite loop of sensor reading and writing to file after processing", true);
   int buffer[10] = {0,0,0,0,0,0,0,0,0,0};
   int leftBuffer[10] = {0,0,0,0,0,0,0,0,0,0};
   int rightBuffer[10] = {0,0,0,0,0,0,0,0,0,0};
   int j = 0;
-  ofs.open ("movement.csv", ofstream::out | ofstream::app);
-  if (!ofs.is_open()) {
-    logger("FATAL", "OpenFile", "Unable to open file movement.csv", 3);
+  logger("openFile","opening file", true);
+  ofs.open ("report/movement1.csv", ofstream::out | ofstream::app);
+  if (!ofs.is_open()){
+    logger("openFile","unable to open file", false);
     return;
   }
+  logger("openFile","file open successfully", false);
   ofs<<"date,movement,left,right,fsr\n";
   while(true){
     char val = getSensorData();
+    logger("getSensorData","trying to get sensor data", true);
+    if(val == -1){
+      logger("getSensorData","unable to get sensor data", false);
+      continue;
+    }
+    logger("getSensorData","got sensor data", false);
     int output[5] = {0,0,0,0,0} ;
     /*
       output[5] = {FSR, sensor1, sensor2, sensor3, sensor4}
@@ -90,21 +99,22 @@ void sensorLogger(){
     buffer[j] = processSensor(output);
     j++;
     if(j > 9){
+      logger("writeToFile", "write to file once buffers are full", true);
       j = 0;
       float sumTotal = summation(buffer);
       float sumLeft = summation(leftBuffer);
       float sumRight = summation(rightBuffer);
       ofs<<currentDateTime()<<","<<sumTotal<<","<<sumLeft<<","<<sumRight<<","<<output[0]<<"\n";
-      ofs.flush();
+      logger("writeToFile", "written to file", false);
     }
   }
-  logger("DEBUG", "sensorLogger", "closed all files and exited");
+
   ofs.close();
+  logger("sensorLogger","all files closed", false);
 }
 
 int main()
 {
 	sensorLogger();
-
 	return 0;
 }

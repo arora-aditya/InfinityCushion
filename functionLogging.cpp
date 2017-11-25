@@ -5,10 +5,31 @@
 #include <fstream>
 using namespace std;
 
-// Get current date/time, format is YYYY-MM-DD.HH:mm:ss
+int returnLevel(char errorTag[]){
+  if(!strcmp(errorTag, "FATAL")){
+    return 0;
+  }
+  else if(!strcmp(errorTag, "ERROR")){
+    return 1;
+  }
+  else if(!strcmp(errorTag, "WARNING")){
+    return 2;
+  }
+  else if(!strcmp(errorTag, "INFO")){
+    return 3;
+  }
+  else if(!strcmp(errorTag, "DEBUG")){
+    return 4;
+  }
+  else{
+    return 4;
+  }
+}
+
 const std::string currentDateTime() {
     /*
     return currentDate and Time in string format
+    format is YYYY-MM-DD.HH:mm:ss
     */
     time_t     now = time(0);
     struct tm  tstruct;
@@ -18,36 +39,42 @@ const std::string currentDateTime() {
 
     return buf;
 }
-void logger(char functionName[], char functionPurpose[], bool exitFlag){
+
+void logger(char errorTag[], char functionName[], char message[], int errorCode){
       /*
       function[]: function names
       exitFlag: whether a function is being entered into or exited from
       */
-      ofstream ofs;
-      ofs.open ("functionLogging.csv", ofstream::out | ofstream::app);
-
-      ofs<<currentDateTime()<<",";
-      if(exitFlag){
-          ofs<<"enter,";
+      ifstream ift;
+      ift.open("logLevel");
+      int logLevel;
+      ift>>logLevel;
+      ift.close();
+      ofstream oft;
+      if(logLevel > 4){
+        logLevel = 4;
       }
-      else{
-          ofs<<"exit,";
+      if(returnLevel(errorTag) > logLevel){
+        return;
       }
+      oft.open ("functionLogging.csv", ofstream::out | ofstream::app);
+      oft<<'['<<currentDateTime()<<"] ";
+      oft<<'(';
+      for(int i = 0; i < strlen(errorTag); i++){
+          oft<<errorTag[i];
+      }
+      oft<<"): ";
       for(int i = 0; i < strlen(functionName); i++){
-          ofs<<functionName[i];
+          oft<<functionName[i];
       }
-      ofs<<",";
-      for(int i = 0; i < strlen(functionPurpose); i++){
-          ofs<<functionPurpose[i];
+      oft<<" ";
+      for(int i = 0; i < strlen(message); i++){
+          oft<<message[i];
       }
-      ofs<<"\n";
-      ofs.close();
-}
-
-int main()
-{
-	logger("LMAO","LMAOOFF",true);
-  logger("LMAO","LMAOOFF",false);
-
-	return 0;
+      if(errorCode != 0){
+        oft<<" ";
+        oft<<errorCode;
+      }
+      oft<<"\n";
+      oft.close();
 }

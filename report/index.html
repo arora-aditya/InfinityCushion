@@ -51,7 +51,7 @@
           , heightDaily = 360 - marginDaily.top - marginDaily.bottom;
 
         // parse the date / time
-        var parseTimeDaily = d3.timeParse("%d-%m-%y");
+        var parseTimeDaily = d3.timeParse("%Y-%m-%d");
         var formatTimeDaily = d3.timeFormat("%e %B");
 
         // set the ranges
@@ -148,7 +148,7 @@
         // moves the 'group' element to the top left margin
         var svgMovement = d3.select("body").append("div").attr("id", "Movement").append("svg").attr("width", widthMovement + marginMovement.left + marginMovement.right).attr("height", heightMovement + marginMovement.top + marginMovement.bottom).append("g").attr("transform", "translate(" + marginMovement.left + "," + marginMovement.top + ")");
 
-        svgMovement.append("text").text("Movement today").attr("class", "lineChartTitle2").attr("x", widthMovement / 2).attr("y", heightMovement / 2);
+        svgMovement.append("text").text("Movement").attr("class", "lineChartTitle2").attr("x", widthMovement / 2).attr("y", heightMovement / 2);
 
         // Get the data
         d3.csv("movement.csv", function(error, data) {
