@@ -12,7 +12,7 @@ float processSensor(int output[CHAR_BIT]){
     pre-process sensor data
   */
   logger("DEBUG","processSensor", "entered pre-process sensor data");
-  float val = 0.4 * output[0] + 0.15 * (output[1]+output[2]+output[3]+output[4]);
+  float val = 0.4 * output[4] + 0.15 * (output[0]+output[1]+output[2]+output[3]);
   if(val > 0.8){
     return 1;
   }
@@ -48,7 +48,7 @@ float summation(int buffer[]){
 
 char getSensorData(){
   char j = 0;
-  for(int i = 0; i < 5; i++){
+  for(int i = 0; i < 7; i++){
     j *= 2;
     j += rand()%2;
   }
@@ -57,9 +57,9 @@ char getSensorData(){
 
 void sensorLogger(){
   /*
-  infinite loop of sensor reading and writing to file after processing
+  loop of sensor reading and writing to file after processing
   */
-  logger("DEBUG", "sensorLogger", "entered infinite loop of sensor reading and writing to file after processing");
+  logger("DEBUG", "sensorLogger", "entered loop of sensor reading and writing to file after processing");
   ofstream ofs;
   int buffer[10] = {0,0,0,0,0,0,0,0,0,0};
   int leftBuffer[10] = {0,0,0,0,0,0,0,0,0,0};
@@ -70,21 +70,24 @@ void sensorLogger(){
     logger("FATAL", "OpenFile", "Unable to open file movement.csv", 3);
     return;
   }
+  int output[7] = {0,0,0,0,0,1,0};
   ofs<<"date,movement,left,right,fsr\n";
-  while(true){
+  while(output[5] == 1){
     char val = getSensorData();
-    int output[5] = {0,0,0,0,0} ;
+    for(int i = 0; i < 7; i++){
+      output[i] = 0;
+    }
     /*
-      output[5] = {FSR, sensor1, sensor2, sensor3, sensor4}
-      value     = {sensor4, sensor3, sensor2, sensor1, FSR}
+      output[5] = {sensor1, sensor2, sensor3, sensor4, FSR, button1, button2}
+      value     = {button1, button2, FSR, sensor4, sensor3, sensor2, sensor1}
     */
-    for (int i = 0; i < 5; ++i) {
+    for (int i = 0; i < 7; ++i) {
       output[i] = (val >> i) & 1;
       cout<<output[i];
     }
     cout<<'\n';
-    int leftOutput[2] = {output[1],output[2]};
-    int rightOutput[2] = {output[3],output[4]};
+    int leftOutput[2] = {output[0],output[1]};
+    int rightOutput[2] = {output[2],output[3]};
     leftBuffer[j] = processHalfSensor(leftOutput);
     rightBuffer[j] = processHalfSensor(rightOutput);
     buffer[j] = processSensor(output);
@@ -94,8 +97,9 @@ void sensorLogger(){
       float sumTotal = summation(buffer);
       float sumLeft = summation(leftBuffer);
       float sumRight = summation(rightBuffer);
-      ofs<<currentDateTime()<<","<<sumTotal<<","<<sumLeft<<","<<sumRight<<","<<output[0]<<"\n";
+      ofs<<currentDateTime()<<","<<sumTotal<<","<<sumLeft<<","<<sumRight<<","<<output[4]<<"\n";
       ofs.flush();
+      logger("DEBUG", "fileWrite", "written to files and flushed");
     }
   }
   logger("DEBUG", "sensorLogger", "closed all files and exited");
