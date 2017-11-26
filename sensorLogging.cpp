@@ -69,14 +69,14 @@ void sensorLogger(){
   int output[7] = {0,0,0,0,0,1,0};
   ofs<<"date,movement,left,right,fsr\n";
   writeState(1); //state: START
-  while(output[5] == 1){
+  while(output[5] == 1 && output[6] != 1){
     char val = gpio.getSensorData();
     for(int i = 0; i < 7; i++){
       output[i] = 0;
     }
     /*
       output[5] = {sensor1, sensor2, sensor3, sensor4, FSR, button1, button2}
-      value     = {button1, button2, FSR, sensor4, sensor3, sensor2, sensor1}
+      value     = {button2, button1, FSR, sensor4, sensor3, sensor2, sensor1}
     */
     for (int i = 0; i < 7; ++i) {
       output[i] = (val >> i) & 1;
