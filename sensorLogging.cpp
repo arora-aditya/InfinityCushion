@@ -65,7 +65,7 @@ void sensorLogger(){
   int leftBuffer[10] = {0,0,0,0,0,0,0,0,0,0};
   int rightBuffer[10] = {0,0,0,0,0,0,0,0,0,0};
   int j = 0;
-  ofs.open ("movement.csv", ofstream::out | ofstream::app);
+  ofs.open ("report/movement.csv", ofstream::out | ofstream::app);
   if (!ofs.is_open()) {
     logger("FATAL", "OpenFile", "Unable to open file movement.csv", 3);
     return;
