@@ -89,9 +89,9 @@
             xDaily.domain(d3.extent(data, function(d) {
                 return d.date;
             }));
-            yDaily.domain(d3.extent(data, function(d) {
+            yDaily.domain([0,d3.max(data, function(d) {
                 return d.hoursStudying;
-            }));
+            })]);
 
             // add the valueline path.
             svgDaily.append("path").data([data]).attr("id", "lineDaily").attr("d", valuelineDaily).attr("stroke", "black");
@@ -103,7 +103,7 @@
                 return yDaily(d.hoursStudying);
             }).on("mouseover", function(d) {
                 div.transition().duration(200).style("opacity", .9);
-                div.html(formatTimeDaily(d.date) + "<br/>" + d.hoursStudying).style("left", (d3.event.pageX) + "px").style("top", (d3.event.pageY - 50) + "px");
+                div.html(formatTimeDaily(d.date) + "<br/>" + (+d.hoursStudying) + " hours").style("left", (d3.event.pageX) + "px").style("top", (d3.event.pageY - 50) + "px");
             }).on("mouseout", function(d) {
                 div.transition().duration(500).style("opacity", 0);
             });
