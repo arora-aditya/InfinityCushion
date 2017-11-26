@@ -9,11 +9,11 @@ if (($i == 0))
     sleep 3
     oled-exp -c
     oled-exp start.lcd
-    ./buttonRead.o 5
+    ./buttonRead.o
     oled-exp -c
     oled-exp draw generate.lcd
     ./sensorLogging.o
-    ./buttonRead.o 6
+    ./buttonRead.o
     source report.sh
     oled-exp -c
     oled-exp draw infinity.lcd

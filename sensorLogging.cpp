@@ -9,12 +9,12 @@
 using namespace std;
 
 // void logger(char errorTag[], char functionName[], char message[], int errorCode);
-float processSensor(int output[8]){
+float processSensor(int output[5]){
   /*
     pre-process sensor data
   */
   logger("DEBUG","processSensor", "entered pre-process sensor data");
-  float val = 0.4 * output[4] + 0.15 * (output[0]+output[1]+output[2]+output[3]);
+  float val = 0.4 * output[3] + 0.25 * (output[0]+output[1]) + 0.3 * (output[2]);
   if(val > 0.8){
     return 1;
   }
@@ -22,17 +22,21 @@ float processSensor(int output[8]){
   return 0;
 }
 
-float processHalfSensor(int output[2]){
+float processHalfSensor(int output[1]){
   /*
   process data for left and right halves seperately
   */
-  logger("DEBUG","processHalfSensor", "entered process data for left and right halves seperately");
-  int sum = output[0] + output[1];
-  if(sum >= 1){
-    return sum;
+  if(readState() >= 4){
+    logger("DEBUG","processHalfSensor", "entered process data for left and right halves seperately");
   }
-  logger("DEBUG","processHalfSensor", "exited process data for left and right halves seperately");
-  return 0;
+  else{
+    logger("INFO","processHalfSensor", "processing halves");
+  }
+  int sum = output[0];
+  if(readState() >= 4){
+    logger("DEBUG","processHalfSensor", "exited process data for left and right halves seperately");
+  }
+  return sum;
 }
 
 float summation(int buffer[]){
@@ -66,25 +70,25 @@ void sensorLogger(){
     logger("FATAL", "OpenFile", "Unable to open file movement.csv", 3);
     return;
   }
-  int output[7] = {0,0,0,0,0,1,0};
+  int output[5] = {0,0,0,0,1};
   ofs<<"date,movement,left,right,fsr\n";
   writeState(1); //state: START
-  while(output[5] == 1 && output[6] != 1){
+  while(output[4] == 1){
     char val = gpio.getSensorData();
-    for(int i = 0; i < 7; i++){
+    for(int i = 0; i < 5; i++){
       output[i] = 0;
     }
     /*
-      output[5] = {sensor1, sensor2, sensor3, sensor4, FSR, button1, button2}
-      value     = {button2, button1, FSR, sensor4, sensor3, sensor2, sensor1}
+      output[5] = {sensor1, sensor2, sensor3, FSR, button1}
+      value     = {button1, FSR, sensor3, sensor2, sensor1}
     */
-    for (int i = 0; i < 7; ++i) {
+    for (int i = 0; i < 5; ++i) {
       output[i] = (val >> i) & 1;
       cout<<output[i];
     }
     cout<<'\n';
-    int leftOutput[2] = {output[0],output[1]};
-    int rightOutput[2] = {output[2],output[3]};
+    int leftOutput[2] = {output[0]};
+    int rightOutput[2] = {output[1]};
     leftBuffer[j] = processHalfSensor(leftOutput);
     rightBuffer[j] = processHalfSensor(rightOutput);
     buffer[j] = processSensor(output);
@@ -99,11 +103,8 @@ void sensorLogger(){
       logger("DEBUG", "fileWrite", "written to files and flushed");
     }
   }
-  if(output[6] == 1){
-    writeState(2); //state: REPORT_GENERATION
-  }
-  if(output[5] == 0){
-    writeState(0); //state: STOP
+  if(output[4] == 1){
+    writeState(0); //state: REPORT_GENERATION
   }
   logger("DEBUG", "sensorLogger", "closed all files and exited");
   ofs.close();
