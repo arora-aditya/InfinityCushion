@@ -91,8 +91,6 @@ void hours(){
 
 
 int main(){
-  if(readState() == 2){
-    hours();
-  }
+  hours();
   writeState(0);
 }
