@@ -6,8 +6,8 @@
 #define PIN_0 "0"
 #define PIN_1 "1"
 #define PIN_2 "2"
-#define PIN_3 "3"
-#define FSR_PIN "18"
+#define FSR_PIN "3"
+#define BUTN_PIN "18"
 #define RST_PIN "19"
 
 #define GPIO_PATH "/sys/class/gpio/"

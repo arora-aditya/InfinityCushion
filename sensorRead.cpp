@@ -24,8 +24,8 @@ int gpioReader::init(){
   gpioPins[0] = PIN_0;
   gpioPins[1] = PIN_1;
   gpioPins[2] = PIN_2;
-  gpioPins[3] = PIN_3;
-  gpioPins[4] = FSR_PIN;
+  gpioPins[3] = FSR_PIN;
+  gpioPins[4] = BUTN_PIN;
   gpioPins[5] = RST_PIN;
 
   int file;
