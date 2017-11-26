@@ -5,6 +5,8 @@
 #include <time.h>
 #include <fstream>
 #include "state.h"
+#include "functionLogging.h"
+
 using namespace std;
 
 bool parseLine(char line[]){
