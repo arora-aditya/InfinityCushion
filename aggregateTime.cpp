@@ -1,24 +1,13 @@
 #include <iostream>
 #include <string>
+#include <string.h>
 #include <stdio.h>
 #include <time.h>
 #include <fstream>
 #include "state.h"
+#include "functionLogging.h"
+
 using namespace std;
-
-// Get current date/time, format is YYYY-MM-DD.HH:mm:ss
-const std::string currentDateTime() {
-  /*
-  return currentDate and Time in string format
-  */
-  time_t     now = time(0);
-  struct tm  tstruct;
-  char       buf[80];
-  tstruct = *localtime(&now);
-  strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
-
-  return buf;
-}
 
 bool parseLine(char line[]){
   int commaCount = 0;
@@ -33,10 +22,19 @@ bool parseLine(char line[]){
 }
 
 void hours(){
+  logger("INFO", "hours", "logging hours to hours.csv");
   ifstream ifs;
   ofstream ofs;
   ifs.open("report/movement.csv");
+  if (!ifs.is_open()) {
+    logger("FATAL", "OpenFile", "Unable to open file movement.csv", 3);
+    return;
+  }
   ofs.open("report/hours.csv");
+  if (!ofs.is_open()) {
+    logger("FATAL", "OpenFile", "Unable to open file movement.csv", 3);
+    return;
+  }
   int seconds = 0;
   char date[11];
   char previousDate[11];
@@ -88,6 +86,7 @@ void hours(){
     ofs<<','<<(float) seconds/3600<<endl;
     ifs.close();
     ofs.close();
+    logger("INFO", "hours", "finished logging hours");
 }
 
 
@@ -95,5 +94,5 @@ int main(){
   if(readState() == 2){
     hours();
   }
-  writeState(0); 
+  writeState(0);
 }

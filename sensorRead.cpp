@@ -99,18 +99,16 @@ void gpioReader::setLogLevel(logLevel level){
 }
 
 gpioReader::gpioReader(){
-  if(_logLevel >= DEBUG)
-    logger("DEBUG", "gpioReader:", "creating new gpioreader object", 0);
   _invariant = 0xDEADBEEF;
   _logLevel = INFO;
   _init = false;
 }
 
 gpioReader::gpioReader(logLevel level){
+  _logLevel = level;
   if(_logLevel >= DEBUG)
     logger("DEBUG", "gpioReader:", "creating new gpioreader object", 0);
   _invariant = 0xDEADBEEF;
-  _logLevel = level;
   _init = false;
 }
 
@@ -160,6 +158,7 @@ char gpioReader::getSensorData(){
       logger("ERROR", "gpioReader:", "failed to write data, lseek() returned error code", errno);
     if(write(_gpioFiles[5], "1", 1) == -1)
       logger("ERROR", "gpioReader:", "failed to write data, write() returned error code", errno);
+    output |= 0XE0;
     return output;
   }
   char* buffer = new char;
@@ -173,6 +172,7 @@ char gpioReader::getSensorData(){
   write(_gpioFiles[5], "0", 1);
   lseek(_gpioFiles[5], 0, SEEK_SET);
   write(_gpioFiles[5], "1", 1);
+  output |= 0XE0;
   return output;
 }
 
@@ -184,8 +184,8 @@ int main(){
 	gpio.init();
   while(1){
     char a = gpio.getSensorData();
-    if(a ^ 16)
-      printf("%d\n", a);
+    printf("%d\n", a);
+    usleep(1000000);
   }
 	return 0;
 }
