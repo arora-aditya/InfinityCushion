@@ -70,10 +70,10 @@ void sensorLogger(){
     logger("FATAL", "OpenFile", "Unable to open file movement.csv", 3);
     return;
   }
-  int output[5] = {0,0,0,0,1};
+  int output[5] = {0,0,0,0,0};
   ofs<<"date,movement,left,right,fsr\n";
   writeState(1); //state: START
-  while(output[4] == 1){
+  while(output[4] != 1){
     char val = gpio.getSensorData();
     for(int i = 0; i < 5; i++){
       output[i] = 0;
@@ -87,8 +87,8 @@ void sensorLogger(){
       cout<<output[i];
     }
     cout<<'\n';
-    int leftOutput[2] = {output[0]};
-    int rightOutput[2] = {output[1]};
+    int leftOutput[1] = {output[0]};
+    int rightOutput[1] = {output[1]};
     leftBuffer[j] = processHalfSensor(leftOutput);
     rightBuffer[j] = processHalfSensor(rightOutput);
     buffer[j] = processSensor(output);
