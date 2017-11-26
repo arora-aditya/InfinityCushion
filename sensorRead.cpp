@@ -89,6 +89,8 @@ int gpioReader::init(){
   if(_logLevel >= INFO)
     logger("INFO", "gpioReader:", "successfully initialized GPIOs", 0);
   
+  _init = true;
+  
   return 0;
 }
 
@@ -120,17 +122,47 @@ gpioReader::~gpioReader(){
     }
   }
   if(_init){
-    if(_logLevel >= DEBUG)
-      logger("DEBUG", "gpioReader:", "closing GPIO files", 0);
+    if(_logLevel >= INFO)
+      logger("INFO", "gpioReader:", "closing GPIO files", 0);
     for(int i = 0; i < 6; ++i){
       close(_gpioFiles[i]);
     }
+    if(_logLevel >= INFO)
+      logger("INFO", "gpioReader:", "freeing GPIO", 0);
+    
+    const char* gpioPins[6];
+    gpioPins[0] = PIN_0;
+    gpioPins[1] = PIN_1;
+    gpioPins[2] = PIN_2;
+    gpioPins[3] = FSR_PIN;
+    gpioPins[4] = BUTN_PIN;
+    gpioPins[5] = RST_PIN;
+    bool error = false;
+    
+    int file;
+    char buffer[BUF_LEN];
+    if((file = open(_cat(buffer, GPIO_PATH, "unexport"), O_WRONLY)) == -1){
+      logger("FATAL", "gpioReader:", "failed to open gpio file, open() returned error code:", errno);
+      error = true;
+    }
+    for(int i = 0; i < 6 && !error; ++i){
+      strcpy(buffer, gpioPins[i]);
+      if(write(file, buffer, strlen(buffer)) == -1){
+        logger("FATAL", "gpioReader:", "failed to free GPIO, write() returned error code:", errno);
+        error = true;
+      }
+    }
+    if(_logLevel >= INFO && !error)
+      logger("INFO", "gpioReader:", "successfully freed GPIO", 0);
+    _init = false;
   }
-  _init = false;
 }
 
 char gpioReader::getSensorData(){
-  if(_init){
+  if(!_init){
+    if(_logLevel >= DEBUG)
+      if(!INVARIANT_TEST)
+        logger("ERROR", "gpioReader:", "failed invariant test, something is very wrong here...", 0);
     if(_logLevel >= WARNING)
       logger("WARNING", "gpioReader:", "tried to read without initializing, will return 0", 0);
     return 0;
@@ -175,7 +207,6 @@ char gpioReader::getSensorData(){
   output |= 0XE0;
   return output;
 }
-
 
 #ifdef SENSOR_TEST
 int main(){
