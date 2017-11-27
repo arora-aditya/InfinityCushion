@@ -17,7 +17,6 @@ const char* _cat(char* dest, const char* const a, const char* const b){
 }
 
 int gpioReader::init(){
-  printf("%d\n",_logLevel);
   if(_logLevel >= DEBUG)
     logger("DEBUG", "gpioReader:", "entered init function", 0);
   const char* gpioPins[6];

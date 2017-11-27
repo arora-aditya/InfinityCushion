@@ -5,8 +5,8 @@
 
 void buttonRead(){
   gpioReader gpio;
-  gpio.init();
   gpio.setLogLevel(DEBUG);
+  gpio.init();
   int output[5] = {0,0,0,0,0};
   logger("INFO", "buttonRead", "reading button values");
   while(output[4] != 1){
