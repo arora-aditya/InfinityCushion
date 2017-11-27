@@ -98,7 +98,7 @@ void sensorLogger(){
       float sumTotal = summation(buffer);
       float sumLeft = summation(leftBuffer);
       float sumRight = summation(rightBuffer);
-      ofs<<currentDateTime()<<","<<sumTotal<<","<<sumLeft<<","<<sumRight<<","<<output[4]<<"\n";
+      ofs<<currentDateTime()<<","<<sumTotal<<","<<sumLeft<<","<<sumRight<<","<<output[3]<<"\n";
       ofs.flush();
       logger("DEBUG", "fileWrite", "written to files and flushed");
     }
