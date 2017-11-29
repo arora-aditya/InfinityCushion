@@ -1,5 +1,5 @@
 #!/bin/sh
 
-oled-exp -c
+oled-exp -c # clear the display
 oled-exp draw report.lcd
 ./aggregateTime.o

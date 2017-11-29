@@ -1,3 +1,6 @@
+/*
+logs sensor values to movement.csv
+*/
 #include <iostream>
 #include <string>
 #include <stdio.h>

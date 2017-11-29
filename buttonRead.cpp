@@ -1,9 +1,14 @@
+/*
+  detects if button is pressed
+*/
+
 #include <stdlib.h>
 #include "functionLogging.h"
 #include "state.h"
 #include "sensorRead.h"
 
 void buttonRead(){
+  //reads button values from gpio until it gets one
   gpioReader gpio;
   gpio.setLogLevel(DEBUG);
   gpio.init();
