@@ -2,12 +2,16 @@
 #include "functionLogging.h"
 #include "state.h"
 #include <iostream>
+
 using namespace std;
+
 int readState(){
+  // read State from global state
   ifstream ifk;
   int globalState;
   ifk.open("globalState");
   if (!ifk.is_open()) {
+    //checking if file is open
     logger("FATAL", "OpenFile", "Unable to open file globalState", 3);
     return -1;
   }
@@ -20,6 +24,7 @@ int writeState(int globalState){
   ofstream ofk;
   ofk.open("globalState");
   if(!ofk.is_open()) {
+    //checking if file is open
     logger("FATAL", "OpenFile", "Unable to open file globalState", 3);
     return -1;
   }

@@ -7,6 +7,7 @@
 using namespace std;
 
 int returnLevel(const char errorTag[]){
+  // return log level from global file log level
   if(!strcmp(errorTag, "FATAL")){
     return 0;
   }
@@ -58,7 +59,7 @@ void logger(const char errorTag[], const char functionName[], const char message
       if(returnLevel(errorTag) > logLevel){
         return;
       }
-      oft.open ("functionLogging.csv", ofstream::out | ofstream::app);
+      oft.open("functionLogging.csv", ofstream::out | ofstream::app);
       oft<<'['<<currentDateTime()<<"] ";
       oft<<'(';
       for(int i = 0; i < strlen(errorTag); i++){
