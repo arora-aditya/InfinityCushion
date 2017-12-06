@@ -1,40 +1,5 @@
-# SmartStudyMonitor
-Project for ECE150 2017
+# What is Infinity Cushion?
 
-Here's an initial draft outline that should have more details filled in over the weekend:
- 
-### Project Overview
-  - What is the project about?
-  - What would you have liked it to do if it could do everything
-  - What subset does it do?
+  The ‘Infinity Cushion’ embedded project is a device that provides valuable, meaningful analytical data to users based on input over periods of time. The device, implemented as a connected cushion, such that it is used when the user sits down over a given interval of time, uses a combination of sensors over various sensitivities (piezoelectric and force resistors), to analyze motion and deviations in vibrations over the study period for which the person is working. The results from the sensors in the system will be stored and analyzed against functions that are developed to match the greatest regression factor(ex: linear regression plot), and at a given period, when the user desires, providing a well-formed summary and report of their studying pattern and focus over their selected interval, enabling the user to optimize study focus. Such a summary is deliverable in the form of a html document, readable on any web browser . The intended user is a student/studying individual, and the inspiration behind the design’s model is a university student optimizing their studying abilities so that they are able to achieve the greatest level of focus while working at their desk. 
 
-### System Design
-  - What is the complete system design: hardware and software
-  - identify all components
-
-### Software Design
-  Identify all source code files (.cpp, .h, makefile, anything else required to build the source code)
-  State machine diagrams, if any
-  Function call tree
-  Classes and/or Structs
-    - interface definition
-      - what each data element represents
-      - what each method represents
-  System-independent components
-  System-dependent components
-  Logging infrastructure
-
-## Additional aspects
-
-### Testing
-  Identify how you know your system does what it claims to do
-
-### Limitations
-  - What doesn't your project do (that it might be expected to do)?
-
-### Lessons Learned
-  - Reflect on your project: what would you do differently if you were starting it again?
-
-### Appendix
-  Source code
-  Peer contribution
+  From a software perspective, the data provided from the sensors in the cushion as well as the simple input from the button to start/stop studying at the screen will be written to a file, which is then processed immediately by polling it along a predetermined interval that matches the average study period for the particular time. All sensor data will serve as a functional layer of files in our software structure. The data written to a file will then, according to our predetermined interval, be run against the aforementioned functions to signify when the greatest motion over a period of time occurred, periods at which no motion was detected, as well as other minor parameters and oddities based on reasonable assumptions (ex: small motions not considered, as within certain percentage error for general human motion). Such statistical analysis will be ported from the functional layer to the analytical layer of our software structure, and further be transferred as a last step, to our output layer (the report file). The statistical data will then be processed into an output file, which the user can access via I/O through either the web or USB and view their respective report, while being able to save their data for future reference. 
